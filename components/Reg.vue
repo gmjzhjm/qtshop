@@ -1,40 +1,91 @@
 <template>
-  <div class="hello">
-    <el-row>
-      <el-col :span="24"><div class="grid-content bg-purple-dark"></div></el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="12"><div class="grid-content bg-purple"></div></el-col>
-      <el-col :span="12"><div class="grid-content bg-purple-light"></div></el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="8"><div class="grid-content bg-purple"></div></el-col>
-      <el-col :span="8"><div class="grid-content bg-purple-light"></div></el-col>
-      <el-col :span="8"><div class="grid-content bg-purple"></div></el-col>
-      </el-row>
-    <el-row>
-      <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
-      <el-col :span="6"><div class="grid-content bg-purple-light"></div></el-col>
-      <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
-      <el-col :span="6"><div class="grid-content bg-purple-light"></div></el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="4"><div class="grid-content bg-purple"></div></el-col>
-      <el-col :span="4"><div class="grid-content bg-purple-light"></div></el-col>
-      <el-col :span="4"><div class="grid-content bg-purple"></div></el-col>
-      <el-col :span="4"><div class="grid-content bg-purple-light"></div></el-col>
-      <el-col :span="4"><div class="grid-content bg-purple"></div></el-col>
-      <el-col :span="4"><div class="grid-content bg-purple-light"></div></el-col>
-    </el-row>
+  <div>
+    <menu-nav></menu-nav>
+    <div class="reg">
+      <el-form :model="ruleForm2" status-icon :rules="rules2" ref="ruleForm2" label-width="100px" class="demo-ruleForm">
+        <el-form-item label="活动名称" prop="name">
+          <el-input v-model="ruleForm2.name"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="pass">
+          <el-input type="password" v-model="ruleForm2.pass" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="确认密码" prop="checkPass">
+          <el-input type="password" v-model="ruleForm2.checkPass" auto-complete="off"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="submitForm('ruleForm2')">注册</el-button>
+          <el-button @click="resetForm('ruleForm2')">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'HelloWorld',
+  name: 'Reg',
   data () {
+    var checkName = (rule, value, callback) => {
+      if (!value || value === '') {
+        return callback(new Error('名称不能为空'))
+      } else {
+        if (value.length < 3 || value.length > 20) {
+          return callback(new Error('请输入3-20个字符'))
+        }
+        callback()
+      }
+    }
+    var validatePass = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入密码'))
+      } else {
+        if (this.ruleForm2.checkPass !== '') {
+          this.$refs.ruleForm2.validateField('checkPass')
+        }
+        callback()
+      }
+    }
+    var validatePass2 = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入密码'))
+      } else if (value !== this.ruleForm2.pass) {
+        callback(new Error('两次输入密码不一致!'))
+      } else {
+        callback()
+      }
+    }
     return {
-      msg: 'Welcome to Your Vue.js App'
+      ruleForm2: {
+        pass: '',
+        checkPass: '',
+        name: ''
+      },
+      rules2: {
+        pass: [
+          { validator: validatePass, trigger: 'blur' }
+        ],
+        checkPass: [
+          { validator: validatePass2, trigger: 'blur' }
+        ],
+        name: [
+          { validator: checkName, trigger: 'blur' }
+        ]
+      }
+    }
+  },
+  methods: {
+    submitForm (formName) {
+      this.$refs[formName].validate((valid) => {
+        if (valid) {
+          alert('submit!')
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
+    resetForm (formName) {
+      this.$refs[formName].resetFields()
     }
   }
 }
@@ -42,30 +93,14 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.el-row {
-    margin-bottom: 20px;
-    &:last-child {
-      margin-bottom: 0;
-    }
-  }
-  .el-col {
-    border-radius: 4px;
-  }
-  .bg-purple-dark {
-    background: #99a9bf;
-  }
-  .bg-purple {
-    background: #d3dce6;
-  }
-  .bg-purple-light {
-    background: #e5e9f2;
-  }
-  .grid-content {
-    border-radius: 4px;
-    min-height: 36px;
-  }
-  .row-bg {
-    padding: 10px 0;
-    background-color: #f9fafc;
-  }
+.reg{
+  width: 400px;
+  padding-bottom: 1px;
+  padding-top: 22px;
+  padding-right: 22px;
+  margin: 0 auto;
+  margin-top: 100px;
+  background-color: #ffffff;
+  box-shadow: 1px 1px 5px #99A9BF;
+}
 </style>

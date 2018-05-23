@@ -6,6 +6,12 @@ import 'element-ui/lib/theme-chalk/index.css'
 import axios from 'axios'
 import App from './App'
 import router from './router'
+import Menu from './components/Menu'
+import Footer from './components/Footer'
+import Header from './components/Header'
+Vue.component('menu-nav', Menu)
+Vue.component('foot-bottom', Footer)
+Vue.component('header-top', Header)
 Vue.use(ElementUI, axios)
 Vue.config.productionTip = false
 
